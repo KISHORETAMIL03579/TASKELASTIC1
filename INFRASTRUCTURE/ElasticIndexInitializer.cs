@@ -41,7 +41,13 @@ namespace INFRASTRUCTURE.Elasticsearch
                     .Analyzers(an => an
                         .Custom("product_analyzer", ca => ca
                             .Tokenizer("standard")
-                                .Filter(new[] { "lowercase" })
+                                .Filter(new[] { "lowercase" , "edge_ngram_filter" })
+                            )
+                        )
+                        .TokenFilters(tf => tf
+                            .EdgeNGram("edge_ngram_filter", e => e
+                                .MinGram(2)
+                                    .MaxGram(10)
                             )
                         )
                     )

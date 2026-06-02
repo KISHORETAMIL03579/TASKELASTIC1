@@ -32,14 +32,33 @@ namespace INFRASTRUCTURE.ElasticSearch
 
         public async Task<IEnumerable<ProductDTO>> GetByNameAsync(string name)
         {
+            //var response = await _client.SearchAsync<ProductDTO>(s => s
+            //    .Index("products")
+            //    .Query(q => q
+            //        .Match(m => m
+            //            .Field(f => f.Name)
+            //            .Query(name)
+            //            .Fuzziness(new Fuzziness("AUTO"))
+            //            .PrefixLength(1)
+            //        )
+            //    )
+            //);
+
             var response = await _client.SearchAsync<ProductDTO>(s => s
                 .Index("products")
                 .Query(q => q
-                    .Match(m => m
-                        .Field(f => f.Name)
-                        .Query(name)
-                        .Fuzziness(new Fuzziness("AUTO"))
-                        .PrefixLength(1)
+                    .Bool(b => b
+                        .Should(
+                            sh => sh.Match(m => m
+                                .Field(f => f.Name)
+                                .Query(name)
+                                .Fuzziness(new Fuzziness("AUTO"))
+                            ),
+                            sh => sh.Wildcard(w => w
+                                .Field(f => f.Name.Suffix("keyword"))
+                                .Value($"*{name.ToLower()}*")
+                            )
+                        )
                     )
                 )
             );
