@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         [HttpGet("All")]
-        public async Task<IActionResult> GetAll(Guid id)
+        public async Task<IActionResult> GetAll()
         {
             var result = await _service.GetAllAsync();
             if (result == null || !result.Any())
