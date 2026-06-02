@@ -11,6 +11,7 @@ namespace APPLICATION.AutoMapper
             // Entity → DetailDTO
             CreateMap<Product, ProductDTO>().ReverseMap();
 
+            CreateMap<Product, ProductPatchDTO>().ReverseMap();
         }
     }
 }

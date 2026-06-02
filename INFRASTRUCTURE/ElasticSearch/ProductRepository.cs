@@ -47,9 +47,9 @@ namespace INFRASTRUCTURE.ElasticSearch
             return response.Documents;
         }
 
-        public async Task<bool> UpdateAsync(Guid id, ProductDTO product)
+        public async Task<bool> PatchAsync(Guid id, ProductPatchDTO product)
         {
-            var response = await _client.UpdateAsync<Product, ProductDTO>(
+            var response = await _client.UpdateAsync<Product, ProductPatchDTO>(
                 Index,
                 id.ToString(),
                 u => u.Doc(product));

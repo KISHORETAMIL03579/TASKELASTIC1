@@ -40,13 +40,14 @@ namespace API.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Update(Guid id, ProductDTO product)
+        public async Task<IActionResult> Patch(Guid id, ProductPatchDTO product)
         {
             var existingProduct = await _service.GetByIdAsync(id);
+
             if (existingProduct != null)
             {
 
-                var result = await _service.UpdateAsync(id, product);
+                var result = await _service.PatchAsync(id, product);
             }
             else
             {

@@ -22,9 +22,9 @@ namespace DOMAIN.Entities
                 errors.Add(new ValidationResult("Name is required", new[] { nameof(Name) }));
             }
 
-            if (Price <= 0)
+            if (Price <= 9)
             {
-                errors.Add(new ValidationResult("Price must be greater than 0", new[] { nameof(Price) }));
+                errors.Add(new ValidationResult("Price must be greater than 9", new[] { nameof(Price) }));
             }
 
             if (Stock < 0)
