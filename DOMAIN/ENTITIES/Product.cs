@@ -5,9 +5,9 @@ namespace DOMAIN.Entities
 {
     public class Product : IValidatableObject
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         public double Price { get; set; }
 

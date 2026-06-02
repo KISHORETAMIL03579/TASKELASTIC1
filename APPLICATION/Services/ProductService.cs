@@ -22,6 +22,9 @@ namespace APPLICATION.Services
         public Task<Product?> GetByIdAsync(string id)
             => _repo.GetByIdAsync(id);
 
+        public Task<IEnumerable<Product>> GetByNameAsync(string name)
+       => _repo.GetByNameAsync(name);
+
         public Task<bool> UpdateAsync(Product product)
         {
             Validate(product);

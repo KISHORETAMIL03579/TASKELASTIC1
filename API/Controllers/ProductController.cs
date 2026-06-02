@@ -30,6 +30,14 @@ namespace API.Controllers
             return result == null ? NotFound() : Ok(result);
         }
 
+        [HttpGet("Name")]
+        public async Task<IActionResult> GetByName([FromQuery] string name)
+        {
+            var result = await _service.GetByNameAsync(name);
+
+            return Ok(result);
+        }
+
         [HttpPut]
         public async Task<IActionResult> Update(Product product)
         {

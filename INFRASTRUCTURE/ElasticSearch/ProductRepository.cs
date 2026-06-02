@@ -29,6 +29,23 @@ namespace INFRASTRUCTURE.ElasticSearch
             return response.Source;
         }
 
+        public async Task<IEnumerable<Product>> GetByNameAsync(string name)
+        {
+            var response = await _client.SearchAsync<Product>(s => s
+                .Index("products")
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.Name)
+                        .Query(name)
+                        .Fuzziness(new Fuzziness("AUTO"))
+                        .PrefixLength(1)
+                    )
+                )
+            );
+
+            return response.Documents;
+        }
+
         public async Task<bool> UpdateAsync(Product product)
         {
             var response = await _client.UpdateAsync<Product, Product>(
