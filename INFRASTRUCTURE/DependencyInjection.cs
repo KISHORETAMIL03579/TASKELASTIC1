@@ -1,5 +1,6 @@
 ﻿using Elastic.Clients.Elasticsearch;
 using Elastic.Transport;
+using INFRASTRUCTURE.Elasticsearch;
 using INFRASTRUCTURE.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ public static class DependencyInjection
         var client = new ElasticsearchClient(clientSettings);
 
         services.AddSingleton(client);
+        services.AddSingleton<ElasticIndexInitializer>();
 
         return services;
     }
