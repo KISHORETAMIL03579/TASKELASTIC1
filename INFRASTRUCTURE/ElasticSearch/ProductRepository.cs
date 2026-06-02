@@ -15,13 +15,13 @@ namespace INFRASTRUCTURE.ElasticSearch
             _client = client;
         }
 
-        public async Task<string> CreateAsync(Guid id, ProductDTO product)
+        public async Task<bool> CreateAsync(Guid id, Product product)
         {
             var response = await _client.IndexAsync(product, i => i
                 .Index(Index)
                 .Id(id.ToString()));
 
-            return response.Id;
+            return response.IsValidResponse;
         }
 
         public async Task<ProductDTO?> GetByIdAsync(Guid id)

@@ -21,8 +21,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductDTO product)
         {
-            var result = await _service.CreateAsync(product);
-            return result != null ? Ok("Product Created Succesfully") : BadRequest("Failed to create product");
+            var success = await _service.CreateAsync(product);
+            return success ? Ok("Product Created Successfully") : BadRequest("Failed to create product");
         }
 
         [HttpGet("{id}")]

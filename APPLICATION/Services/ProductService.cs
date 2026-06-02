@@ -14,11 +14,26 @@ namespace APPLICATION.Services
             _repo = repo;
         }
 
-        public async Task<string> CreateAsync(ProductDTO product)
+        public async Task<bool> CreateAsync(ProductDTO product)
         {
             Validate(product);
-            Guid id = Guid.NewGuid();
-            return await _repo.CreateAsync(id, product);
+
+            var domainProduct = new Product
+            {
+                Id = Guid.NewGuid(),
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock
+            };
+
+            var success = await _repo.CreateAsync(domainProduct.Id, domainProduct);
+
+            if (!success)
+            {
+                throw new Exception("Failed to create product in repository");
+            }
+
+            return true;
         }
 
         public Task<ProductDTO?> GetByIdAsync(Guid id)

@@ -8,7 +8,7 @@ namespace APPLICATION.Interfaces
 {
     public interface IProductService
     {
-        Task<string> CreateAsync(ProductDTO product);
+        Task<bool> CreateAsync(ProductDTO product);
         Task<ProductDTO?> GetByIdAsync(Guid id);
         Task<IEnumerable<ProductDTO>> GetByNameAsync(string name);
         Task<bool> PatchAsync(Guid id, ProductPatchDTO product);
