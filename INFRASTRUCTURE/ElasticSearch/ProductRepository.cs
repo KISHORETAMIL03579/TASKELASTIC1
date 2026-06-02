@@ -18,14 +18,14 @@ namespace INFRASTRUCTURE.ElasticSearch
         {
             var response = await _client.IndexAsync(product, i => i
                 .Index(Index)
-                .Id(product.Id));
+                .Id(product.Id.ToString()));
 
             return response.Id;
         }
 
-        public async Task<Product?> GetByIdAsync(string id)
+        public async Task<Product?> GetByIdAsync(Guid id)
         {
-            var response = await _client.GetAsync<Product>(id, g => g.Index(Index));
+            var response = await _client.GetAsync<Product>(id.ToString(), g => g.Index(Index));
             return response.Source;
         }
 
@@ -50,15 +50,15 @@ namespace INFRASTRUCTURE.ElasticSearch
         {
             var response = await _client.UpdateAsync<Product, Product>(
                 Index,
-                product.Id,
+                product.Id.ToString(),
                 u => u.Doc(product));
 
             return response.IsValidResponse;
         }
 
-        public async Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            var response = await _client.DeleteAsync<Product>(id, d => d.Index(Index));
+            var response = await _client.DeleteAsync<Product>(id.ToString(), d => d.Index(Index));
             return response.IsValidResponse;
         }
     }

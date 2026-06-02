@@ -19,8 +19,10 @@ namespace APPLICATION.Services
             return await _repo.CreateAsync(product);
         }
 
-        public Task<Product?> GetByIdAsync(string id)
-            => _repo.GetByIdAsync(id);
+        public Task<Product?> GetByIdAsync(Guid id)
+        {
+            return _repo.GetByIdAsync(id);
+        }
 
         public Task<IEnumerable<Product>> GetByNameAsync(string name)
        => _repo.GetByNameAsync(name);
@@ -31,7 +33,7 @@ namespace APPLICATION.Services
             return _repo.UpdateAsync(product);
         }
 
-        public Task<bool> DeleteAsync(string id)
+        public Task<bool> DeleteAsync(Guid id)
             => _repo.DeleteAsync(id);
 
         private void Validate(Product product)

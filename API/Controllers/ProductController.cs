@@ -1,6 +1,7 @@
 ﻿using APPLICATION.Interfaces;
 using APPLICATION.Services;
 using DOMAIN.Entities;
+using Elastic.Clients.Elasticsearch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -19,37 +20,55 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Product product)
         {
-            var id = await _service.CreateAsync(product);
-            return Ok(id);
+           var result = await _service.CreateAsync(product);
+           return result != null ? Ok("Product Created Succesfully") : BadRequest("Failed to create product");
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get(Guid id)
         {
             var result = await _service.GetByIdAsync(id);
-            return result == null ? NotFound() : Ok(result);
+            return result == null ? NotFound($"Product Not Found For the id {id}") : Ok(result);
         }
 
         [HttpGet("Name")]
         public async Task<IActionResult> GetByName([FromQuery] string name)
         {
             var result = await _service.GetByNameAsync(name);
-
-            return Ok(result);
+            return result == null ? NotFound($"Product Not Found For the Name {name}") : Ok(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(Product product)
         {
-            var result = await _service.UpdateAsync(product);
-            return Ok(result);
+            var existingProduct = await _service.GetByIdAsync(product.Id);
+            if (existingProduct != null)
+            {
+                var result = await _service.UpdateAsync(product);
+            }
+            else
+            {
+                return NotFound($"Product Not Found For the id {product.Id}");
+            }
+
+            return Ok("Product Updated Successfully");
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _service.DeleteAsync(id);
-            return Ok(result);
+            var existingProduct = await _service.GetByIdAsync(id);
+
+            if (existingProduct != null)
+            {
+                var result = await _service.DeleteAsync(id);
+            }
+            else
+            {
+                return NotFound($"Product Not Found For the id {id}");
+            }
+
+            return Ok("Product Deleted Successfully");
         }
     }
 }
