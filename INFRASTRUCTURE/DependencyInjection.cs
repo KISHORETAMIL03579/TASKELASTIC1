@@ -7,6 +7,7 @@ using INFRASTRUCTURE.Elasticsearch;
 using INFRASTRUCTURE.ElasticSearch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure;
 
@@ -16,21 +17,20 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var esSettings = configuration
-            .GetSection("Elasticsearch")
-            .Get<ElasticsearchSettings>();
+        // Bind settings using Options pattern
+        services.Configure<ElasticsearchSettings>(configuration.GetSection("Elasticsearch"));
 
-        if (esSettings is null)
+        // Register Elasticsearch client. For development, accept untrusted TLS certificates.
+        services.AddSingleton(sp =>
         {
-            throw new Exception("Elasticsearch configuration is missing in appsettings.json");
-        }
+            var options = sp.GetRequiredService<IOptions<ElasticsearchSettings>>().Value;
 
-        var clientSettings = new ElasticsearchClientSettings(new Uri(esSettings.Url))
-            .Authentication(new BasicAuthentication(esSettings.Username, esSettings.Password));
+            var clientSettings = new ElasticsearchClientSettings(new Uri(options.Url))
+                .Authentication(new BasicAuthentication(options.Username, options.Password))
+                .ServerCertificateValidationCallback((sender, cert, chain, errors) => true); // dev-only
 
-        var client = new ElasticsearchClient(clientSettings);
-
-        services.AddSingleton(client);
+            return new ElasticsearchClient(clientSettings);
+        });
         services.AddSingleton<ElasticIndexInitializer>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductService, ProductService>();
