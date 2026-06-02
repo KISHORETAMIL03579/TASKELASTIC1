@@ -1,7 +1,10 @@
-﻿using Elastic.Clients.Elasticsearch;
+﻿using APPLICATION.Interfaces;
+using APPLICATION.Services;
+using Elastic.Clients.Elasticsearch;
 using Elastic.Transport;
+using INFRASTRUCTURE.Configuration;
 using INFRASTRUCTURE.Elasticsearch;
-using INFRASTRUCTURE.Settings;
+using INFRASTRUCTURE.ElasticSearch;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +32,8 @@ public static class DependencyInjection
 
         services.AddSingleton(client);
         services.AddSingleton<ElasticIndexInitializer>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IProductService, ProductService>();
 
         return services;
     }

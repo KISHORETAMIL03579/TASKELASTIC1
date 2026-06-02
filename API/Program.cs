@@ -1,7 +1,6 @@
-using Elastic.Clients.Elasticsearch;
-using Elastic.Transport;
 using INFRASTRUCTURE.Elasticsearch;
-using INFRASTRUCTURE.Settings;
+using INFRASTRUCTURE.Configuration;
+using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,23 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Read config
-var esSettings = builder.Configuration.GetSection("Elasticsearch").Get<ElasticsearchSettings>();
-
-if (esSettings is null)
-{
-    throw new Exception("Elasticsearch configuration is missing");
-}
-
-// Elasticsearch client
-var clientSettings = new ElasticsearchClientSettings(new Uri(esSettings.Url))
-    .Authentication(new BasicAuthentication(esSettings.Username, esSettings.Password));
-
-var client = new ElasticsearchClient(clientSettings);
-
-// Register DI
-builder.Services.AddSingleton(client);
-builder.Services.AddSingleton<ElasticIndexInitializer>();
+// Register infrastructure (Elasticsearch client, initializer, etc.)
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

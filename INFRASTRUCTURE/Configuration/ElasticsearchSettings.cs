@@ -1,4 +1,4 @@
-﻿namespace INFRASTRUCTURE.Settings;
+﻿namespace INFRASTRUCTURE.Configuration;
 
 public class ElasticsearchSettings
 {
