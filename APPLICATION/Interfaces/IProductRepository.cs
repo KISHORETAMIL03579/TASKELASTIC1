@@ -1,12 +1,13 @@
-﻿using DOMAIN.Entities;
+﻿using APPLICATION.DTO;
+using DOMAIN.Entities;
 
 namespace APPLICATION.Interfaces;
 
 public interface IProductRepository
 {
-    Task<string> CreateAsync(Product product);
-    Task<Product?> GetByIdAsync(Guid id);
-    Task<IEnumerable<Product>> GetByNameAsync(string name);
-    Task<bool> UpdateAsync(Product product);
+    Task<string> CreateAsync(Guid id, ProductDTO product);
+    Task<ProductDTO?> GetByIdAsync(Guid id);
+    Task<IEnumerable<ProductDTO>> GetByNameAsync(string name);
+    Task<bool> UpdateAsync(Guid id, ProductDTO product);
     Task<bool> DeleteAsync(Guid id);
 }

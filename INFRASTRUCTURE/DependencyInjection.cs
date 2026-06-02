@@ -1,4 +1,5 @@
-﻿using APPLICATION.Interfaces;
+﻿using APPLICATION.AutoMapper;
+using APPLICATION.Interfaces;
 using APPLICATION.Services;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Transport;
@@ -32,6 +33,7 @@ public static class DependencyInjection
             return new ElasticsearchClient(clientSettings);
         });
         services.AddSingleton<ElasticIndexInitializer>();
+        services.AddAutoMapper(typeof(AutoMap).Assembly);
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductService, ProductService>();
 

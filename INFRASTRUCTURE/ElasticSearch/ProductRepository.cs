@@ -1,4 +1,5 @@
-﻿using APPLICATION.Interfaces;
+﻿using APPLICATION.DTO;
+using APPLICATION.Interfaces;
 using DOMAIN.Entities;
 using Elastic.Clients.Elasticsearch;
 
@@ -14,24 +15,24 @@ namespace INFRASTRUCTURE.ElasticSearch
             _client = client;
         }
 
-        public async Task<string> CreateAsync(Product product)
+        public async Task<string> CreateAsync(Guid id, ProductDTO product)
         {
             var response = await _client.IndexAsync(product, i => i
                 .Index(Index)
-                .Id(product.Id.ToString()));
+                .Id(id.ToString()));
 
             return response.Id;
         }
 
-        public async Task<Product?> GetByIdAsync(Guid id)
+        public async Task<ProductDTO?> GetByIdAsync(Guid id)
         {
-            var response = await _client.GetAsync<Product>(id.ToString(), g => g.Index(Index));
+            var response = await _client.GetAsync<ProductDTO>(id.ToString(), g => g.Index(Index));
             return response.Source;
         }
 
-        public async Task<IEnumerable<Product>> GetByNameAsync(string name)
+        public async Task<IEnumerable<ProductDTO>> GetByNameAsync(string name)
         {
-            var response = await _client.SearchAsync<Product>(s => s
+            var response = await _client.SearchAsync<ProductDTO>(s => s
                 .Index("products")
                 .Query(q => q
                     .Match(m => m
@@ -46,11 +47,11 @@ namespace INFRASTRUCTURE.ElasticSearch
             return response.Documents;
         }
 
-        public async Task<bool> UpdateAsync(Product product)
+        public async Task<bool> UpdateAsync(Guid id, ProductDTO product)
         {
-            var response = await _client.UpdateAsync<Product, Product>(
+            var response = await _client.UpdateAsync<Product, ProductDTO>(
                 Index,
-                product.Id.ToString(),
+                id.ToString(),
                 u => u.Doc(product));
 
             return response.IsValidResponse;

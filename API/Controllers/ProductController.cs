@@ -1,4 +1,5 @@
-﻿using APPLICATION.Interfaces;
+﻿using APPLICATION.DTO;
+using APPLICATION.Interfaces;
 using APPLICATION.Services;
 using DOMAIN.Entities;
 using Elastic.Clients.Elasticsearch;
@@ -18,10 +19,10 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(ProductDTO product)
         {
-           var result = await _service.CreateAsync(product);
-           return result != null ? Ok("Product Created Succesfully") : BadRequest("Failed to create product");
+            var result = await _service.CreateAsync(product);
+            return result != null ? Ok("Product Created Succesfully") : BadRequest("Failed to create product");
         }
 
         [HttpGet("{id}")]
@@ -38,17 +39,18 @@ namespace API.Controllers
             return result == null ? NotFound($"Product Not Found For the Name {name}") : Ok(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(Product product)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Update(Guid id, ProductDTO product)
         {
-            var existingProduct = await _service.GetByIdAsync(product.Id);
+            var existingProduct = await _service.GetByIdAsync(id);
             if (existingProduct != null)
             {
-                var result = await _service.UpdateAsync(product);
+
+                var result = await _service.UpdateAsync(id, product);
             }
             else
             {
-                return NotFound($"Product Not Found For the id {product.Id}");
+                return NotFound($"Product Not Found For the id {id}");
             }
 
             return Ok("Product Updated Successfully");

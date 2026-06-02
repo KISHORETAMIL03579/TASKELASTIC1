@@ -1,4 +1,5 @@
-﻿using APPLICATION.Interfaces;
+﻿using APPLICATION.DTO;
+using APPLICATION.Interfaces;
 using DOMAIN.Entities;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,30 +14,31 @@ namespace APPLICATION.Services
             _repo = repo;
         }
 
-        public async Task<string> CreateAsync(Product product)
+        public async Task<string> CreateAsync(ProductDTO product)
         {
             Validate(product);
-            return await _repo.CreateAsync(product);
+            Guid id = Guid.NewGuid();
+            return await _repo.CreateAsync(id, product);
         }
 
-        public Task<Product?> GetByIdAsync(Guid id)
+        public Task<ProductDTO?> GetByIdAsync(Guid id)
         {
             return _repo.GetByIdAsync(id);
         }
 
-        public Task<IEnumerable<Product>> GetByNameAsync(string name)
+        public Task<IEnumerable<ProductDTO>> GetByNameAsync(string name)
        => _repo.GetByNameAsync(name);
 
-        public Task<bool> UpdateAsync(Product product)
+        public Task<bool> UpdateAsync(Guid id, ProductDTO product)
         {
             Validate(product);
-            return _repo.UpdateAsync(product);
+            return _repo.UpdateAsync(id, product);
         }
 
         public Task<bool> DeleteAsync(Guid id)
             => _repo.DeleteAsync(id);
 
-        private void Validate(Product product)
+        private void Validate(ProductDTO product)
         {
             var results = new List<ValidationResult>();
             var context = new ValidationContext(product);
