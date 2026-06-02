@@ -2,6 +2,7 @@
 using APPLICATION.Interfaces;
 using DOMAIN.Entities;
 using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 
 namespace INFRASTRUCTURE.ElasticSearch
 {
@@ -15,13 +16,22 @@ namespace INFRASTRUCTURE.ElasticSearch
             _client = client;
         }
 
-        public async Task<bool> CreateAsync(Guid id, Product product)
+        public async Task<List<ProductDTO>> GetAllAsync()
         {
-            var response = await _client.IndexAsync(product, i => i
-                .Index(Index)
-                .Id(id.ToString()));
+            var response = await _client.SearchAsync<ProductDTO>(s => s
+                .Query(q => q.MatchAll(new MatchAllQuery()))
+                .Size(1000)
+            );
 
-            return response.IsValidResponse;
+            if (!response.IsValidResponse)
+            {
+                return new List<ProductDTO>();
+            }
+
+            return response.Hits
+                .Where(h => h.Source != null)
+                .Select(h => h.Source!)
+                .ToList();
         }
 
         public async Task<ProductDTO?> GetByIdAsync(Guid id)
@@ -64,6 +74,15 @@ namespace INFRASTRUCTURE.ElasticSearch
             );
 
             return response.Documents;
+        }
+
+        public async Task<bool> CreateAsync(Guid id, Product product)
+        {
+            var response = await _client.IndexAsync(product, i => i
+                .Index(Index)
+                .Id(id.ToString()));
+
+            return response.IsValidResponse;
         }
 
         public async Task<bool> PatchAsync(Guid id, ProductPatchDTO product)

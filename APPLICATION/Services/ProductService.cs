@@ -14,6 +14,21 @@ namespace APPLICATION.Services
             _repo = repo;
         }
 
+        public Task<List<ProductDTO>> GetAllAsync()
+        {
+            return _repo.GetAllAsync();
+        }
+
+        public Task<ProductDTO?> GetByIdAsync(Guid id)
+        {
+            return _repo.GetByIdAsync(id);
+        }
+
+        public Task<IEnumerable<ProductDTO>> GetByNameAsync(string name)
+        {
+            return _repo.GetByNameAsync(name);
+        }
+
         public async Task<bool> CreateAsync(ProductDTO product)
         {
             Validate(product);
@@ -35,14 +50,6 @@ namespace APPLICATION.Services
 
             return true;
         }
-
-        public Task<ProductDTO?> GetByIdAsync(Guid id)
-        {
-            return _repo.GetByIdAsync(id);
-        }
-
-        public Task<IEnumerable<ProductDTO>> GetByNameAsync(string name)
-       => _repo.GetByNameAsync(name);
 
         public async Task<bool> PatchAsync(Guid id, ProductPatchDTO product)
         {
@@ -89,7 +96,9 @@ namespace APPLICATION.Services
         }
 
         public Task<bool> DeleteAsync(Guid id)
-            => _repo.DeleteAsync(id);
+        {
+            return _repo.DeleteAsync(id);
+        }
 
         private void Validate(ProductDTO product)
         {

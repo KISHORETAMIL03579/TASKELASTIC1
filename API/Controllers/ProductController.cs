@@ -18,15 +18,17 @@ namespace API.Controllers
             _service = service;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(ProductDTO product)
+        [HttpGet("All")]
+        public async Task<IActionResult> GetAll(Guid id)
         {
-            var success = await _service.CreateAsync(product);
-            return success ? Ok("Product Created Successfully") : BadRequest("Failed to create product");
+            var result = await _service.GetAllAsync();
+            if (result == null || !result.Any())
+                return NotFound("No products available now");
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _service.GetByIdAsync(id);
             return result == null ? NotFound($"Product Not Found For the id {id}") : Ok(result);
@@ -37,6 +39,13 @@ namespace API.Controllers
         {
             var result = await _service.GetByNameAsync(name);
             return result == null ? NotFound($"Product Not Found For the Name {name}") : Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(ProductDTO product)
+        {
+            var success = await _service.CreateAsync(product);
+            return success ? Ok("Product Created Successfully") : BadRequest("Failed to create product");
         }
 
         [HttpPatch("{id}")]
